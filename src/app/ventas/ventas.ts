@@ -1,5 +1,7 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ApiService } from '../servicios/api'; 
+
 @Component({
   selector: 'app-ventas',
   standalone: true,
@@ -7,31 +9,64 @@ import { RouterModule } from '@angular/router';
   templateUrl: './ventas.html',
   styleUrl: './ventas.css',
 })
-export class Ventas implements AfterViewInit{
+export class Ventas {
   @ViewChild('contenedor', { static: true }) contenedor!: ElementRef<HTMLDivElement>;
   @ViewChild('graficoLineas', { static: true }) graficoLineas!: ElementRef<SVGSVGElement>;
   @ViewChild('graficoBarras', { static: true }) graficoBarras!: ElementRef<SVGSVGElement>;
 
   datos: any[] = [];
-  sucursales: string[] = ["Mes", "Santa Fe", "Paraná", "Santo Tome", "Rafaela", "Rosario"];
+  sucursales: string[] = ["Mes"];
   meses: string[] = ["", "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-  ngAfterViewInit(): void {
-    this.inicializarDatos();
-    this.dibujarTabla();
-    this.graficarLineas();
-    this.graficarBarrasApiladas();
+  // Inyectamos el servicio normalmente
+  constructor(private apiService: ApiService) {
+    
+    // afterNextRender SOLO se ejecuta en el navegador (reemplaza a isPlatformBrowser y ngAfterViewInit)
+    afterNextRender(() => {
+      this.cargarDatosYGraficar();
+    });
+    
   }
+  
 
-  inicializarDatos() {
+  cargarDatosYGraficar(): void {
+    // 1. Armamos la estructura vacía
     for (let f = 0; f <= 12; f++) {
-      this.datos[f] = ["0", "a", "a", "a", "a", "a"];
+      this.datos[f] = ["0", 0, 0, 0, 0, 0];
     }
-    for (let f = 1; f <= 12; f++) {
-      for (let c = 1; c < this.sucursales.length; c++) {
-        this.datos[f][c] = Math.round(50 + Math.random() * 50);
-      }
-    }
+
+    // 2. Pedimos las sucursales dinámicas a MySQL
+    this.apiService.obtenerSucursales().subscribe({
+      next: (sucursalesBD) => {
+        
+        sucursalesBD.forEach((s: any) => {
+          this.sucursales.push(s.nombre);
+        });
+
+        // 3. Pedimos los totales de ventas a MySQL
+        this.apiService.obtenerVentas().subscribe({
+          next: (ventasBD) => {
+            
+            ventasBD.forEach((item: any) => {
+              const mes = item.mes;
+              this.datos[mes][1] = item["1"];
+              this.datos[mes][2] = item["2"];
+              this.datos[mes][3] = item["3"];
+              this.datos[mes][4] = item["4"];
+              this.datos[mes][5] = item["5"];
+            });
+
+            // 4. Con todos los datos listos, dibujamos el HTML y los SVG
+            this.dibujarTabla();
+            this.graficarLineas();
+            this.graficarBarrasApiladas();
+            
+          },
+          error: (err) => console.error("Error trayendo ventas", err)
+        });
+      },
+      error: (err) => console.error("Error trayendo sucursales", err)
+    });
   }
 
   dibujarTabla() {

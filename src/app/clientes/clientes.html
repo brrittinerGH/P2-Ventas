@@ -14,7 +14,7 @@
         </thead>
         <tbody>
           <!-- Usamos cl.idCliente para el track, que es el identificador único correcto -->
-          @for (cl of clients; track cl.idCliente) {
+          @for (cl of clients(); track cl.idCliente) {
             <tr>
               <!-- Identidad del Cliente -->
               <td>

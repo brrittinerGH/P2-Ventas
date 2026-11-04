@@ -1,5 +1,5 @@
-import { Component , OnInit} from '@angular/core';
-import { RouterModule } from "@angular/router";
+import { Component, OnInit, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { ApiService } from '../servicios/api';
 
 @Component({
@@ -8,23 +8,21 @@ import { ApiService } from '../servicios/api';
   templateUrl: './sucursales.html',
   styleUrl: './sucursales.css'
 })
-export class Sucursales implements OnInit{
+export class Sucursales implements OnInit {
 
-  suc: any[] = [];  
- constructor(private apiService: ApiService) {}
+  suc = signal<any[]>([]);
+
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.apiService.obtenerSucursales().subscribe({
       next: (datos) => {
-        this.suc = datos;
-        console.log("¡Sucursales cargadas!", this.suc);
+        this.suc.set(datos);
+        console.log('¡Sucursales cargadas!', this.suc());
       },
       error: (error) => {
-        console.error("Error cargando sucursales:", error);
+        console.error('Error cargando sucursales:', error);
       }
     });
   }
-
-  
-
 }

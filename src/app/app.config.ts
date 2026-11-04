@@ -7,9 +7,6 @@ import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // 1. Agregamos el detector de cambios automático de Angular
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideBrowserGlobalErrorListeners(),
     provideRouter(routes), 
     provideClientHydration(),
     provideHttpClient() 

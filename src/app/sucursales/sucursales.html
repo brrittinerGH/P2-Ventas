@@ -8,7 +8,7 @@
     <!-- Contenedor de Tarjetas (Grid) -->
     <div class="branches-grid">
       <!-- 1. Usamos idSucursal para el identificador único -->
-      @for (s of suc; track s.idSucursal) {
+      @for (s of suc(); track s.idSucursal) {
         <div class="branch-card">
                       
           <!-- Detalle Principal -->
