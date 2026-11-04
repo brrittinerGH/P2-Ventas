@@ -7,15 +7,18 @@
   
     <!-- Contenedor de Tarjetas (Grid) -->
     <div class="branches-grid">
-      @for (s of suc; track s.id) {
+      <!-- 1. Usamos idSucursal para el identificador único -->
+      @for (s of suc; track s.idSucursal) {
         <div class="branch-card">
                       
           <!-- Detalle Principal -->
           <div class="branch-info">
             <div class="info-icon">📍</div>
             <div class="info-text">
-              <h3>Sucursal {{s.id}}</h3>
-              <p class="address">{{s.dir}}</p>
+              <!-- 2. Mostramos el nombre de la sucursal -->
+              <h3>Sucursal {{ s.nombre }}</h3>
+              <!-- 3. Mostramos la dirección -->
+              <p class="address">{{ s.direccion }}</p>
             </div>
           </div>
   
@@ -24,7 +27,8 @@
             <div class="meta-item">
               <span class="meta-icon">👥</span>
               <span class="meta-label">Personal:</span>
-              <span class="meta-value">{{s.nEmp}} Empleados</span>
+              <!-- 4. Mostramos la cantidad de empleados -->
+              <span class="meta-value">{{ s.cantempleado }} Empleados</span>
             </div>
           </div>
           

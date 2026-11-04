@@ -1,27 +1,29 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../servicios/api'; 
 
 @Component({
   selector: 'app-clientes',
-  imports: [],
+  standalone: true,
   templateUrl: './clientes.html',
   styleUrl: './clientes.css'
 })
-export class Clientes implements OnInit{
- public clients:any=[];
+export class Clientes implements OnInit {
+  
+  // 1. Declaramos la variable que está pidiendo tu HTML
+  clients: any[] = []; 
+
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
-    this.clients= [{Nombre: "Juan",Apel:"Rodriguez",Activo:true},
-{Nombre: "Jose",Apel:"Perez",Activo:true},
-{Nombre: "Pedro",Apel:"Gutierrez",Activo:false},
-{Nombre: "Maria",Apel:"Tossi",Activo:true},
-{Nombre: "Juana",Apel:"Fernandez",Activo:true},
-{Nombre: "Marcelo",Apel:"Diaz",Activo:false},
-{Nombre: "Kevin",Apel:"Motomel",Activo:true},
-{Nombre: "Ricardo",Apel:"Tercero",Activo:true},
-{Nombre: "Juliana",Apel:"Awada",Activo:false}
-    
-  ];  
-
+    this.apiService.obtenerClientes().subscribe({
+      next: (datos) => {
+        // 2. Guardamos los datos de la base de datos en la variable
+        this.clients = datos; 
+        console.log("¡Éxito! Datos guardados en clients:", this.clients);
+      },
+      error: (error) => {
+        console.error("Hubo un error de conexión:", error);
+      }
+    });
   }
-
-
 }

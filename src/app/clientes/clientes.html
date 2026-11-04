@@ -13,22 +13,26 @@
           </tr>
         </thead>
         <tbody>
-          @for (cl of clients; track cl.apel) {
+          <!-- Usamos cl.idCliente para el track, que es el identificador único correcto -->
+          @for (cl of clients; track cl.idCliente) {
             <tr>
               <!-- Identidad del Cliente -->
               <td>
                 <div class="customer-info">
                   <div class="avatar-fallback">
-                    {{ cl.Apel.charAt(0) }}{{ cl.Nombre.charAt(0) }}
+                    <!-- Cambiamos a las minúsculas exactas de tu BD -->
+                    {{ cl.apellido.charAt(0) }}{{ cl.nombre.charAt(0) }}
                   </div>
                   <div class="customer-name">
-                    <span class="lastname">{{ cl.Apel }}</span>, {{ cl.Nombre }}
+                    <!-- Cambiamos a las minúsculas exactas de tu BD -->
+                    <span class="lastname">{{ cl.apellido }}</span>, {{ cl.nombre }}
                   </div>
                 </div>
               </td>
   
               <td class="text-center">
-                @if (cl.Activo) {
+                <!-- Tu BD actual no tiene estado Activo/Inactivo, así que forzamos a que muestre Activo -->
+                @if (true) {
                   <span class="status-badge active">
                     <span class="status-icon">✓</span> Activo
                   </span>
