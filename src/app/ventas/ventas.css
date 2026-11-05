@@ -64,15 +64,21 @@ svg {
   overflow: visible; /* Permite ver textos que sobresalen */
 }
 
-/* === ESTILOS PARA LA TABLA INYECTADA DINÁMICAMENTE === */
-.table-responsive table {
+/* === TABLA INYECTADA DINÁMICAMENTE (innerHTML) === */
+/* Se necesita :host ::ng-deep porque Angular no aplica los estilos
+   encapsulados a elementos creados con innerHTML */
+.table-responsive {
+  overflow-x: auto; /* Si hay muchas sucursales, scroll horizontal */
+}
+
+:host ::ng-deep .table-responsive table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
 }
 
-.table-responsive caption {
+:host ::ng-deep .table-responsive caption {
   font-size: 1.1rem;
   font-weight: 700;
   color: #0f172a;
@@ -80,7 +86,7 @@ svg {
   padding-bottom: 1rem;
 }
 
-.table-responsive th {
+:host ::ng-deep .table-responsive th {
   background-color: #f1f5f9;
   color: #475569;
   font-weight: 600;
@@ -90,25 +96,57 @@ svg {
   font-size: 0.75rem;
 }
 
-.table-responsive td {
+:host ::ng-deep .table-responsive td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #f1f5f9;
   color: #334155;
 }
 
-.table-responsive tr:hover {
+:host ::ng-deep .table-responsive tr:hover {
   background-color: #f8fafc;
 }
 
-/* Estilo para las celdas de números de sucursales */
-#BGC {
+/* Celdas con números de sucursales */
+:host ::ng-deep .bgc {
   font-family: monospace;
   font-size: 0.95rem;
   font-weight: 600;
   color: #0f172a;
 }
 
-/* Adaptación para pantallas móviles pequeñas */
+/* === LEYENDA DE LOS GRÁFICOS === */
+.leyenda-graficos {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0 2rem 0;
+  flex-wrap: wrap;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+}
+
+.caja-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.leyenda-texto {
+  font-size: 0.9rem;
+  color: #0f172a;
+  font-weight: 600;
+}
+
 @media (max-width: 600px) {
   .charts-grid {
     grid-template-columns: 1fr;
@@ -117,3 +155,4 @@ svg {
     overflow-x: auto;
   }
 }
+

@@ -9,7 +9,17 @@
   <div class="card table-card">
     <div #contenedor class="table-responsive"></div>
   </div>
-
+  <!-- Leyenda de Colores -->
+    <div class="leyenda-graficos">
+      @for (item of leyenda(); track item.nombre) {
+        <div class="leyenda-item">
+          <!-- Este span es el cuadradito que se pinta de color -->
+          <span class="caja-color" [style.background-color]="item.color"></span>
+          <!-- Este span es el nombre de la sucursal -->
+          <span class="leyenda-texto">{{ item.nombre }}</span>
+        </div>
+      }
+    </div>
   <!-- Contenedor del Grid de Gráficos -->
   <div class="charts-grid">
     <!-- Gráfico de Líneas -->

@@ -1,95 +1,68 @@
-/* Contenedor Principal */
-.hero-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 3rem 1.5rem;
-    font-family: system-ui, -apple-system, sans-serif;
-    color: #1e293b;
-  }
-  
-  .hero-content {
-    max-width: 1000px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  /* Textos */
-  .badge {
-    background-color: #e2e8f0;
-    color: #475569;
-    padding: 0.4rem 1rem;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: inline-block;
-    margin-bottom: 1rem;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    margin-bottom: 1rem;
-    color: #0f172a;
-  }
-  
-  .text-highlight {
-    color: #dd0031; /* Rojo característico de Angular */
-  }
-  
-  p {
-    color: #64748b;
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto 3rem auto;
-    line-height: 1.6;
-  }
-  
-  /* Grid de Características */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  
-  /* Tarjetas Individuales */
-  .feature-card {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f1f5f9;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-align: left;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-  }
-  
-  .feature-card .icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .feature-card h3 {
-    font-size: 1.25rem;
-    color: #0f172a;
-    margin-bottom: 0.5rem;
-  }
-  
-  .feature-card p {
-    font-size: 0.95rem;
-    color: #64748b;
-    margin: 0;
-    line-height: 1.5;
-  }
-  a {
-    text-decoration: none;   /* elimina subrayado por defecto */
-    color: #0f172a;
-  }
+.home-container {
+  padding: 3rem 1.5rem;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  text-align: center;
+}
 
+.home-header h1 {
+  margin: 0 0 0.75rem 0;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+}
+
+.saludo {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.05rem;
+  color: #334155;
+}
+
+.subtitulo {
+  margin: 0 0 2.5rem 0;
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
+.home-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.home-card {
+  flex: 1 1 280px;
+  max-width: 320px;
+  padding: 2rem;
+  text-align: left;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.home-card:hover {
+  transform: translateY(-3px);
+  border-color: #93c5fd;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12);
+}
+
+.home-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.home-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #64748b;
+}
   

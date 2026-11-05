@@ -142,4 +142,71 @@
     color: #0f172a;
     border-color: #cbd5e1;
   }
-  
+  .btn-primary {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-cliente {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.form-cliente input,
+.form-cliente select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.btn-baja {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff;
+  color: #991b1b;
+  cursor: pointer;
+}
+
+.btn-baja:hover { background: #fee2e2; }
+
+.form-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.customers-actions {
+  margin: 0 0 1rem 0;
+}
+
+.dni {
+  font-family: monospace;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.fiscal {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+}

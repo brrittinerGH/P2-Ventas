@@ -1,9 +1,9 @@
 :root {
-  --primary-color: #dd0031;   
-  --text-dark: #0f172a;        
-  --text-light: #64748b;       
-  --bg-header: #ffffff;        
-  --border-color: #f1f5f9;    
+  --primary-color: #dd0031;
+  --text-dark: #0f172a;
+  --text-light: #64748b;
+  --bg-header: #ffffff;
+  --border-color: #f1f5f9;
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -14,9 +14,16 @@ html, body {
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* La app ocupa toda la altura: el footer queda siempre al pie */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 /* Header */
 .main-header {
-  background-color: var(--bg-header); 
+  background-color: #ffffff;
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   position: sticky;
@@ -31,6 +38,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1.5rem;
   height: 70px;
 }
 
@@ -45,23 +53,27 @@ html, body {
 }
 
 .brand h1 {
+  font-family: inherit;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-dark);
   margin: 0;
   letter-spacing: -0.025em;
+  white-space: nowrap;
 }
 
 .nav-menu {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .nav-btn {
   background: transparent;
   border: none;
   color: var(--text-light);
-  padding: 0.6rem 1rem;
+  font-family: inherit;
+  padding: 0.6rem 0.9rem;
   font-size: 0.95rem;
   font-weight: 500;
   border-radius: 8px;
@@ -80,45 +92,75 @@ html, body {
   font-weight: 600;
 }
 
-/* Contenido */
-.content-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: calc(100vh - 140px); 
+/* Usuario y salir (fuera del @media: se aplican en todos los tamaños) */
+.usuario-activo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid #e2e8f0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
 }
 
-/* Footer */
-.main-footer {
-  text-align: center;
-  padding: 1.5rem;
-  border-top: 1px solid var(--border-color);
-  background-color: var(--bg-header); /* mismo color que el header */
+.usuario-activo small {
+  font-weight: 400;
   color: var(--text-light);
-  font-size: 0.85rem;
-  margin-top: auto;
-  position: relative;
-  bottom: 0;
+}
+
+.usuario-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff1f2;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.nav-salir:hover {
+  background-color: #fff1f2;
+  color: var(--primary-color);
+}
+
+/* Contenido */
+.content-wrapper {
+  flex: 1;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .header-container {
     flex-direction: column;
     height: auto;
     padding: 1rem 0;
     gap: 1rem;
   }
-  
+
   .nav-menu {
     width: 100%;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
+
   .nav-btn {
-    flex: 1;
-    text-align: center;
     font-size: 0.85rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .usuario-activo {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
   }
 }

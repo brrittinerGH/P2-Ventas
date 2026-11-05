@@ -1,0 +1,136 @@
+.facturas-container {
+  padding: 2.5rem 1.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+}
+
+.facturas-container h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Formulario de alta */
+.form-factura {
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.form-factura h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #334155;
+}
+
+.form-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-factura label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 180px;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-factura input,
+.form-factura select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary:hover { background: #1d4ed8; }
+
+/* Listado */
+.card-tabla {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.tabla-facturas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla-facturas th {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.tabla-facturas td {
+  padding: 0.7rem 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tabla-facturas tbody tr:hover { background: #f8fafc; }
+
+.num { text-align: right !important; }
+.mono { font-family: monospace; font-weight: 600; }
+.vacio { text-align: center; color: #64748b; padding: 2rem !important; }
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.paginacion button {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.text-center { text-align: center !important; }
+
+.estado {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.estado.pagado    { background: #dcfce7; color: #166534; }
+.estado.pendiente { background: #fef3c7; color: #92400e; }
+.estado.atrasado  { background: #fee2e2; color: #991b1b; }
+
+.paginacion button:hover:not(:disabled) { background: #f1f5f9; }
+.paginacion button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.msg-error { background: #fee2e2; color: #991b1b; padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; }
+.msg-ok    { background: #dcfce7; color: #166534; padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; }

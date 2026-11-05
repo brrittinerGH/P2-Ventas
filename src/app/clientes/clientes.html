@@ -1,52 +1,86 @@
 <section class="customers-container">
-    <div class="customers-header">
-      <h2>Listado de Clientes</h2>
-      <p>Administra la base de datos de usuarios, altas, bajas y el estado de sus cuentas.</p>
-    </div>
-  
-    <div class="table-responsive">
-      <table class="customers-table">
-        <thead>
+  <div class="customers-header">
+    <h2>Listado de Clientes</h2>
+    <p>Administra la base de datos de usuarios, altas, bajas y el estado de sus cuentas.</p>
+  </div>
+
+  @if (error()) {
+    <div class="form-error">{{ error() }}</div>
+  }
+
+  <div class="customers-actions">
+    <button class="btn-primary" (click)="mostrarForm.set(!mostrarForm())">
+      {{ mostrarForm() ? 'Cancelar' : '+ Nuevo cliente' }}
+    </button>
+  </div>
+
+  @if (mostrarForm()) {
+    <form class="form-cliente" (ngSubmit)="guardar()">
+      <input name="nombre" [(ngModel)]="nuevo.nombre" placeholder="Nombre" required>
+      <input name="apellido" [(ngModel)]="nuevo.apellido" placeholder="Apellido" required>
+      <input name="dni" [(ngModel)]="nuevo.dni" placeholder="DNI (solo números)" required>
+      <select name="situacionFiscal" [(ngModel)]="nuevo.situacionFiscal">
+        <option>Consumidor Final</option>
+        <option>Monotributista</option>
+        <option>Responsable Inscripto</option>
+        <option>Exento</option>
+      </select>
+      <button type="submit" class="btn-primary">Guardar</button>
+    </form>
+  }
+
+  <div class="table-responsive">
+    <table class="customers-table">
+      <thead>
+        <tr>
+          <th>Cliente (Apellido y Nombre)</th>
+          <th>DNI</th>
+          <th>Situación fiscal</th>
+          <th class="text-center">Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cl of clients(); track cl.idCliente) {
           <tr>
-            <th>Cliente (Apellido y Nombre)</th>
-            <th class="text-center">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Usamos cl.idCliente para el track, que es el identificador único correcto -->
-          @for (cl of clients(); track cl.idCliente) {
-            <tr>
-              <!-- Identidad del Cliente -->
-              <td>
-                <div class="customer-info">
-                  <div class="avatar-fallback">
-                    <!-- Cambiamos a las minúsculas exactas de tu BD -->
-                    {{ cl.apellido.charAt(0) }}{{ cl.nombre.charAt(0) }}
-                  </div>
-                  <div class="customer-name">
-                    <!-- Cambiamos a las minúsculas exactas de tu BD -->
-                    <span class="lastname">{{ cl.apellido }}</span>, {{ cl.nombre }}
-                  </div>
+            <td>
+              <div class="customer-info">
+                <div class="avatar-fallback">
+                  {{ cl.apellido.charAt(0) }}{{ cl.nombre.charAt(0) }}
                 </div>
-              </td>
-  
-              <td class="text-center">
-                <!-- Tu BD actual no tiene estado Activo/Inactivo, así que forzamos a que muestre Activo -->
-                @if (true) {
-                  <span class="status-badge active">
-                    <span class="status-icon">✓</span> Activo
-                  </span>
-                } @else {
-                  <span class="status-badge inactive">
-                    <span class="status-icon">✕</span> Inactivo
-                  </span>
-                }
-              </td>
-  
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
+                <div class="customer-name">
+                  <span class="lastname">{{ cl.apellido }}</span>, {{ cl.nombre }}
+                </div>
+              </div>
+            </td>
+
+            <td class="dni">{{ (+cl.dni).toLocaleString('es-AR') }}</td>
+
+            <td>
+              <span class="fiscal">{{ cl.situacionFiscal }}</span>
+            </td>
+
+            <td class="text-center">
+              @if (cl.estado === 1) {
+                <span class="status-badge active">
+                  <span class="status-icon">✓</span> Activo
+                </span>
+              } @else {
+                <span class="status-badge inactive">
+                  <span class="status-icon">✕</span> Inactivo
+                </span>
+              }
+            </td>
+
+            <td class="text-center">
+              @if (cl.estado === 1) {
+                <button class="btn-baja" (click)="darDeBaja(cl)">Dar de baja</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
   

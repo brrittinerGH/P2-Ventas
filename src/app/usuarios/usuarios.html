@@ -1,0 +1,53 @@
+<section class="usuarios-container">
+  <div class="usuarios-header">
+    <h2>Usuarios</h2>
+    <p>Alta y baja de usuarios del sistema.</p>
+  </div>
+
+  @if (error()) {
+    <div class="form-error">{{ error() }}</div>
+  }
+
+  <div class="usuarios-actions">
+    <button class="btn-primary" (click)="mostrarForm.set(!mostrarForm())">
+      {{ mostrarForm() ? 'Cancelar' : '+ Nuevo usuario' }}
+    </button>
+  </div>
+
+  @if (mostrarForm()) {
+    <form class="form-usuario" (ngSubmit)="guardar()">
+      <input name="usuario" [(ngModel)]="nuevo.usuario" placeholder="Usuario" autocomplete="off" required>
+      <input name="clave" type="password" [(ngModel)]="nuevo.clave" placeholder="Contraseña (mín. 8)" autocomplete="new-password" required>
+      <select name="rol" [(ngModel)]="nuevo.rol">
+        <option value="vendedor">Vendedor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit" class="btn-primary">Guardar</button>
+    </form>
+  }
+
+  <div class="card-tabla">
+    <table class="tabla-usuarios">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of lista(); track u.idUsuario) {
+          <tr>
+            <td>{{ u.usuario }}</td>
+            <td><span class="rol" [class.rol-admin]="u.rol === 'admin'">{{ u.rol }}</span></td>
+            <td class="text-center">
+              @if (u.usuario !== auth.usuario()) {
+                <button class="btn-baja" (click)="eliminar(u)">Eliminar</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

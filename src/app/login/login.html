@@ -1,0 +1,22 @@
+<section class="login-container">
+  <form class="login-card" (ngSubmit)="entrar()">
+    <h2>Iniciar sesión</h2>
+    <p class="login-sub">Ingresa con tu usuario y contraseña.</p>
+
+    <label for="usuario">Usuario</label>
+    <input id="usuario" name="usuario" type="text"
+           [(ngModel)]="usuario" autocomplete="username" autofocus>
+
+    <label for="clave">Contraseña</label>
+    <input id="clave" name="clave" type="password"
+           [(ngModel)]="clave" autocomplete="current-password">
+
+    @if (error()) {
+      <div class="login-error">{{ error() }}</div>
+    }
+
+    <button type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'Ingresando...' : 'Entrar' }}
+    </button>
+  </form>
+</section>

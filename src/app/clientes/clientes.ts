@@ -1,28 +1,52 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { ApiService } from '../servicios/api'; 
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../servicios/api';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
+  imports: [FormsModule],
   templateUrl: './clientes.html',
   styleUrl: './clientes.css'
 })
 export class Clientes implements OnInit {
-  
-  // 1. Declaramos la variable que está pidiendo tu HTML
+
   clients = signal<any[]>([]);
+  error = signal('');
+  mostrarForm = signal(false);
+
+  nuevo = { nombre: '', apellido: '', situacionFiscal: 'Consumidor Final', dni: '' };
+
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
+    this.cargar();
+  }
+
+  cargar(): void {
     this.apiService.obtenerClientes().subscribe({
-      next: (datos) => {
-        // 2. Guardamos los datos de la base de datos en la variable
-        this.clients.set(datos);
-        console.log("¡Éxito! Datos guardados en clients:", this.clients());
+      next: (datos) => this.clients.set(datos),
+      error: (err) => this.error.set(err.error?.error ?? 'No se pudo cargar la lista')
+    });
+  }
+
+  guardar(): void {
+    this.error.set('');
+    this.apiService.crearCliente(this.nuevo).subscribe({
+      next: () => {
+        this.nuevo = { nombre: '', apellido: '', situacionFiscal: 'Consumidor Final', dni: '' };
+        this.mostrarForm.set(false);
+        this.cargar();
       },
-      error: (error) => {
-        console.error("Hubo un error de conexión:", error);
-      }
+      error: (err) => this.error.set(err.error?.error ?? 'No se pudo crear el cliente')
+    });
+  }
+
+  darDeBaja(cl: any): void {
+    if (!confirm(`¿Dar de baja a ${cl.apellido}, ${cl.nombre}?`)) return;
+    this.apiService.bajaCliente(cl.idCliente).subscribe({
+      next: () => this.cargar(),
+      error: (err) => this.error.set(err.error?.error ?? 'No se pudo dar de baja')
     });
   }
 }

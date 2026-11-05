@@ -1,0 +1,87 @@
+<section class="facturas-container">
+  <h2>Facturas</h2>
+
+  @if (error()) { <div class="msg-error">{{ error() }}</div> }
+  @if (exito()) { <div class="msg-ok">{{ exito() }}</div> }
+
+  <!-- Alta -->
+  <form class="form-factura" (ngSubmit)="guardar()">
+    <h3>Nueva factura</h3>
+
+    <div class="form-fila">
+      <label>Fecha
+        <input type="date" name="fecha" [(ngModel)]="factura.fecha" required>
+      </label>
+
+      <label>Cliente
+        <select name="idCliente" [(ngModel)]="factura.idCliente" required>
+          <option [ngValue]="0" disabled>Elegir cliente</option>
+          @for (c of clientes(); track c.idCliente) {
+            <option [ngValue]="c.idCliente">{{ c.apellido }}, {{ c.nombre }}</option>
+          }
+        </select>
+      </label>
+
+      <label>Sucursal
+        <select name="idSucursal" [(ngModel)]="factura.idSucursal" required>
+          <option [ngValue]="0" disabled>Elegir sucursal</option>
+          @for (s of sucursales(); track s.idSucursal) {
+            <option [ngValue]="s.idSucursal">{{ s.nombre }}</option>
+          }
+        </select>
+      </label>
+
+      <label>Importe
+        <input type="number" name="importe" [(ngModel)]="factura.importe" min="0.01" step="0.01" required>
+      </label>
+    </div>
+
+    <button type="submit" class="btn-primary">Guardar factura</button>
+  </form>
+
+  <!-- Listado -->
+  <div class="card-tabla">
+    <table class="tabla-facturas">
+  <thead>
+    <tr>
+      <th>N°</th>
+      <th>Fecha</th>
+      <th>Cliente</th>
+      <th>Sucursal</th>
+      <th class="num">Importe</th>
+      <th class="num">IVA</th>
+      <th class="text-center">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (f of lista(); track f.NroFactura) {
+      <tr>
+        <td class="mono">#{{ f.NroFactura }}</td>
+        <td>{{ formatearFecha(f.FechaFactura) }}</td>
+        <td><strong>{{ f.apellido }}</strong>, {{ f.nombreCliente }}</td>
+        <td>{{ f.sucursal }}</td>
+        <td class="num mono">$ {{ f.Importe.toLocaleString('es-AR', { minimumFractionDigits: 2 }) }}</td>
+        <td class="num mono">$ {{ f.IVA.toLocaleString('es-AR', { minimumFractionDigits: 2 }) }}</td>
+        <td class="text-center">
+          <span class="estado" [class]="'estado ' + f.Estado.toLowerCase()">{{ f.Estado }}</span>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="7" class="vacio">
+          {{ cargandoLista() ? 'Cargando...' : 'No hay facturas para mostrar' }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+    <div class="paginacion">
+      <button (click)="irAPagina(1)" [disabled]="pagina() === 1">«</button>
+      <button (click)="irAPagina(pagina() - 1)" [disabled]="pagina() === 1">Anterior</button>
+      <span>Página {{ pagina() }} de {{ totalPaginas() }} · {{ total() }} facturas</span>
+      <button (click)="irAPagina(pagina() + 1)" [disabled]="pagina() === totalPaginas()">Siguiente</button>
+      <button (click)="irAPagina(totalPaginas())" [disabled]="pagina() === totalPaginas()">»</button>
+    </div>
+  </div>
+</section>

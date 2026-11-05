@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { Component, ElementRef, ViewChild, afterNextRender, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ApiService } from '../servicios/api'; 
+import { ApiService } from '../servicios/api';
 
 @Component({
   selector: 'app-ventas',
@@ -14,156 +14,127 @@ export class Ventas {
   @ViewChild('graficoLineas', { static: true }) graficoLineas!: ElementRef<SVGSVGElement>;
   @ViewChild('graficoBarras', { static: true }) graficoBarras!: ElementRef<SVGSVGElement>;
 
-  datos: any[] = [];
-  sucursales: string[] = ["Mes"];
+  sucursales: any[] = [];
+  datos: number[][] = [];   // datos[mes 1..12][posición de la sucursal]
   meses: string[] = ["", "ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+  leyenda = signal<any[]>([]);
 
-  // Inyectamos el servicio normalmente
+  private paleta = ['blue', 'red', 'green', 'orange', 'purple', 'teal', 'brown', 'deeppink', 'gray', 'gold'];
+
+  private colorPara(i: number): string {
+    return i < this.paleta.length ? this.paleta[i] : `hsl(${(i * 137.5) % 360}, 65%, 45%)`;
+  }
+
   constructor(private apiService: ApiService) {
-    
-    // afterNextRender SOLO se ejecuta en el navegador (reemplaza a isPlatformBrowser y ngAfterViewInit)
     afterNextRender(() => {
       this.cargarDatosYGraficar();
     });
-    
   }
-  
 
   cargarDatosYGraficar(): void {
-    // 1. Armamos la estructura vacía
-    for (let f = 0; f <= 12; f++) {
-      this.datos[f] = ["0", 0, 0, 0, 0, 0];
-    }
-
-    // 2. Pedimos las sucursales dinámicas a MySQL
-    this.apiService.obtenerSucursales().subscribe({
+    this.apiService.obtenerTodasLasSucursales().subscribe({
       next: (sucursalesBD) => {
-        
-        sucursalesBD.forEach((s: any) => {
-          this.sucursales.push(s.nombre);
-        });
+        this.sucursales = sucursalesBD.map((s: any, i: number) => ({
+          id: Number(s.idSucursal),
+          nombre: s.nombre,
+          color: this.colorPara(i),
+        }));
+        this.datos = Array.from({ length: 13 }, () => new Array(this.sucursales.length).fill(0));
+        this.leyenda.set(this.sucursales);
 
-        // 3. Pedimos los totales de ventas a MySQL
         this.apiService.obtenerVentas().subscribe({
           next: (ventasBD) => {
-            
-            ventasBD.forEach((item: any) => {
-              const mes = item.mes;
-              this.datos[mes][1] = item["1"];
-              this.datos[mes][2] = item["2"];
-              this.datos[mes][3] = item["3"];
-              this.datos[mes][4] = item["4"];
-              this.datos[mes][5] = item["5"];
+            ventasBD.forEach((v: any) => {
+              const pos = this.sucursales.findIndex(s => s.id === Number(v.idSucursal));
+              if (pos !== -1) {
+                this.datos[Number(v.mes)][pos] += Number(v.total);
+              }
             });
 
-            // 4. Con todos los datos listos, dibujamos el HTML y los SVG
             this.dibujarTabla();
             this.graficarLineas();
             this.graficarBarrasApiladas();
-            
           },
-          error: (err) => console.error("Error trayendo ventas", err)
+          error: (err) => console.error('Error trayendo ventas', err),
         });
       },
-      error: (err) => console.error("Error trayendo sucursales", err)
+      error: (err) => console.error('Error trayendo sucursales', err),
     });
   }
 
   dibujarTabla() {
-    let tabla = "<table border='1'>";
-    tabla += "<caption>Grafica Sucursales</caption>";
-    tabla += "<thead><tr>";
-    for (let x = 0; x < this.sucursales.length; x++) {
-      tabla += "<th>" + this.sucursales[x] + "</th>";
-    }
-    tabla += "</tr></thead><tbody>";
+    let tabla = '<table><caption>Grafica Sucursales</caption><thead><tr><th>Mes</th>';
+    this.sucursales.forEach(s => (tabla += `<th>${s.nombre}</th>`));
+    tabla += '</tr></thead><tbody>';
+
     for (let f = 1; f <= 12; f++) {
-      tabla += "<tr>";
-      tabla += "<td>" + this.meses[f] + "</td>";
-      for (let c = 1; c < this.sucursales.length; c++) {
-        tabla += "<td id='BGC'>" + this.datos[f][c] + "</td>";
-      }
-      tabla += "</tr>";
+      tabla += `<tr><td>${this.meses[f]}</td>`;
+      this.sucursales.forEach((_, c) => (tabla += `<td class="bgc">${this.datos[f][c]}</td>`));
+      tabla += '</tr>';
     }
-    tabla += "</tbody></table>";
+    tabla += '</tbody></table>';
     this.contenedor.nativeElement.innerHTML = tabla;
   }
 
-  graficarLinea(sucursal: number, color: string) {
-    const svg = this.graficoLineas.nativeElement;
-    const ancho = 600;
-    const alto = 300;
-    let puntos = "";
-
-    const valores = this.datos.slice(1).map((fila) => fila[sucursal]);
-    const maxValor = Math.max(...valores);
-
-    for (let d = 0; d < valores.length; d++) {
-      let x = (d / (valores.length - 1)) * ancho;
-      let y = alto - (valores[d] / maxValor) * alto;
-      puntos += `${x},${y} `;
-    }
-
-    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    polyline.setAttribute("points", puntos.trim());
-    polyline.setAttribute("fill", "none");
-    polyline.setAttribute("stroke", color);
-    polyline.setAttribute("stroke-width", "2");
-    svg.appendChild(polyline);
-  }
-
   graficarLineas() {
-    this.graficarLinea(1, "blue");   // Santa Fe
-    this.graficarLinea(2, "red");    // Paraná
-    this.graficarLinea(3, "green");  // Santo Tomé
-    this.graficarLinea(4, "orange"); // Rafaela
-    this.graficarLinea(5, "purple"); // Rosario
+    const svg = this.graficoLineas.nativeElement;
+    svg.innerHTML = '';
+
+    const ancho = 600, alto = 300;
+    const maxValor = Math.max(1, ...this.datos.slice(1).flat());
+
+    this.sucursales.forEach((s, c) => {
+      let puntos = '';
+      for (let m = 1; m <= 12; m++) {
+        const x = ((m - 1) / 11) * ancho;
+        const y = alto - (this.datos[m][c] / maxValor) * alto;
+        puntos += `${x},${y} `;
+      }
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      polyline.setAttribute('points', puntos.trim());
+      polyline.setAttribute('fill', 'none');
+      polyline.setAttribute('stroke', s.color);
+      polyline.setAttribute('stroke-width', '2');
+      svg.appendChild(polyline);
+    });
   }
 
   graficarBarrasApiladas() {
     const svg = this.graficoBarras.nativeElement;
-    svg.innerHTML = "";
+    svg.innerHTML = '';
 
-    const ancho = 600;
-    const alto = 300;
-    const meses = 12;
-    const sucursales = 5;
-
-    let maxTotal = 0;
-    for (let f = 1; f <= meses; f++) {
-      let sumaMes = 0;
-      for (let c = 1; c <= sucursales; c++) {
-        sumaMes += this.datos[f][c];
-      }
-      if (sumaMes > maxTotal) maxTotal = sumaMes;
-    }
-
-    const colores = ["blue", "red", "green", "orange", "purple"];
+    const ancho = 600, alto = 300, meses = 12;
     const grupoAncho = ancho / meses;
+
+    const maxTotal = Math.max(
+      1,
+      ...Array.from({ length: meses }, (_, i) =>
+        this.datos[i + 1].reduce((a, b) => a + b, 0)
+      )
+    );
 
     for (let f = 1; f <= meses; f++) {
       let acumulado = 0;
-      for (let c = 1; c <= sucursales; c++) {
-        let valor = this.datos[f][c];
-        let barAlto = (valor / maxTotal) * (alto - 40);
-        let x = (f - 1) * grupoAncho;
-        let y = alto - acumulado - barAlto - 20;
+      this.sucursales.forEach((s, c) => {
+        const barAlto = (this.datos[f][c] / maxTotal) * (alto - 40);
+        const x = (f - 1) * grupoAncho;
+        const y = alto - acumulado - barAlto - 20;
 
-        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", x.toString());
-        rect.setAttribute("y", y.toString());
-        rect.setAttribute("width", (grupoAncho - 2).toString());
-        rect.setAttribute("height", barAlto.toString());
-        rect.setAttribute("fill", colores[c - 1]);
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x.toString());
+        rect.setAttribute('y', y.toString());
+        rect.setAttribute('width', (grupoAncho - 2).toString());
+        rect.setAttribute('height', barAlto.toString());
+        rect.setAttribute('fill', s.color);
         svg.appendChild(rect);
 
         acumulado += barAlto;
-      }
+      });
 
-      const texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      texto.setAttribute("x", ((f - 1) * grupoAncho + grupoAncho / 2 - 10).toString());
-      texto.setAttribute("y", (alto - 5).toString());
-      texto.setAttribute("font-size", "10");
+      const texto = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      texto.setAttribute('x', ((f - 1) * grupoAncho + grupoAncho / 2 - 10).toString());
+      texto.setAttribute('y', (alto - 5).toString());
+      texto.setAttribute('font-size', '10');
       texto.textContent = this.meses[f];
       svg.appendChild(texto);
     }

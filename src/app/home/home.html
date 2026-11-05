@@ -1,37 +1,17 @@
-<section class="hero-container">
-  <div class="hero-content">
-    <h1>Panel de Control <span class="text-highlight">AngularRM</span></h1>
-    <p>Gestiona tus ventas, sucursales y clientes desde una sola interfaz moderna, rápida y eficiente.</p>
+<section class="home-container">
+  <div class="home-header">
+    <h1>Sistema de Gestión Sucursales</h1>
     
-    
-    <div class="features-grid">
-      <a routerLink="/ventas">
-      <div class="feature-card">
-        <div class="icon">📈</div>
-        <h3>Ventas</h3>
-        <p>Monitorea ingresos y transacciones en tiempo real.</p>
-      </div>
-    </a>
+    <p class="subtitulo">{{ subtitulo() }}</p>
+  </div>
 
-    <a routerLink="/sucursales">
-      <div class="feature-card">
-        <div class="icon">📍</div>
-        <h3>Sucursales</h3>
-        <p>Administra ubicaciones y stock disponible.</p>
-      </div>
-    </a>
-    <a routerLink="/clientes">
-      <div class="feature-card">
-        <div class="icon">👥</div>
-        <h3>Clientes</h3>
-        <p>Fideliza y organiza tu base de datos de usuarios.</p>
-      </div>
-    </a>
-    
-    </div>
+  <div class="home-grid">
+    @for (o of visibles(); track o.ruta) {
+      <a class="home-card" [routerLink]="o.ruta">
+        <h3>{{ o.titulo }}</h3>
+        <p>{{ o.texto }}</p>
+      </a>
+    }
   </div>
 </section>
 
-<router-outlet>
-
-</router-outlet>
